@@ -43,7 +43,7 @@ export function createRecoveryTokenRepository(pool) {
         const { rows: [user] } = await client.query(
           'SELECT id, email, activo, password_hash FROM usuarios WHERE email = $1 FOR UPDATE', [email],
         );
-        if (!user || !user.activo || !user.password_hash) return null;
+        if (!user?.activo || !user.password_hash) return null;
         const expiresAt = new Date(now.getTime() + RECOVERY_TTL_MS);
         await client.query(
           `INSERT INTO recuperacion_tokens (usuario_id, token_hash, expires_at) VALUES ($1, $2, $3)
