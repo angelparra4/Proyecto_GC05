@@ -124,7 +124,15 @@ export function ResetPasswordForm({ token, onReset }) {
   }
 
   const invalid = !validToken || check === 'invalid';
-  return <RecoveryLayout title={invalid ? 'Enlace expirado o no válido' : check === 'valid' ? 'Establece una nueva contraseña' : 'Comprobando enlace'}>
+
+  let title = 'Comprobando enlace';
+  if (invalid) {
+    title = 'Enlace expirado o no válido';
+  } else if (check === 'valid') {
+    title = 'Establece una nueva contraseña';
+  }
+
+  return <RecoveryLayout title={title}>
     {invalid ? <p role="alert" className="error">Enlace expirado o no válido. Solicita uno nuevo.</p>
       : check === 'checking' ? <p role="status">Comprobando que el enlace sigue siendo válido…</p>
       : check === 'error' ? <><p role="alert" className="error">{checkError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>Reintentar comprobación</button></> : <>

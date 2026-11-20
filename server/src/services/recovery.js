@@ -1,4 +1,4 @@
-import validator from 'validator';
+import isEmail from 'validator/lib/isEmail.js';
 import { validatePassword } from '../validation/registration.js';
 import { hashPassword } from '../security/passwords.js';
 
@@ -23,7 +23,7 @@ export function createRecoveryService({ tokens, sendRecovery, logError = () => {
 
     async request(body) {
       const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
-      if (!email || email.length > 254 || !validator.isEmail(email, { allow_utf8_local_part: false })) {
+      if (!email || email.length > 254 || !isEmail(email, { allow_utf8_local_part: false })) {
         throw new RecoveryError(400, 'Introduce un correo válido.');
       }
       const issued = await tokens.issue(email);

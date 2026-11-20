@@ -101,6 +101,7 @@ export function PasswordForm({ localPassword = true }) {
 
       <label className="checkbox">
         <input type="checkbox" checked={visible} onChange={event => setVisible(event.target.checked)} disabled={saving} />
+        {' '}
         Mostrar las contraseñas
       </label>
       <p className="help">Al cambiarla se cerrarán tus sesiones abiertas en otros dispositivos.</p>

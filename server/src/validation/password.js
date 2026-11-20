@@ -1,6 +1,6 @@
 import { validatePassword } from './registration.js';
 
-const FIELDS = ['actual', 'nueva', 'confirmacion'];
+const FIELDS = new Set(['actual', 'nueva', 'confirmacion']);
 const MAX_LENGTH = 128;
 
 /** US-006. Valida la petición de cambio de contraseña. No recorta ni altera las contraseñas. */
@@ -11,7 +11,7 @@ export function validatePasswordChange(body) {
 
   const errors = {};
   for (const key of Object.keys(body)) {
-    if (!FIELDS.includes(key)) errors[key] = 'Este campo no se admite.';
+    if (!FIELDS.has(key)) errors[key] = 'Este campo no se admite.';
   }
 
   const text = (value) => (typeof value === 'string' ? value : '');
