@@ -131,11 +131,19 @@ export function ResetPasswordForm({ token, onReset }) {
   } else if (check === 'valid') {
     title = 'Establece una nueva contraseña';
   }
+  let content;
 
-  return <RecoveryLayout title={title}>
-    {invalid ? <p role="alert" className="error">Enlace expirado o no válido. Solicita uno nuevo.</p>
-      : check === 'checking' ? <p role="status">Comprobando que el enlace sigue siendo válido…</p>
-      : check === 'error' ? <><p role="alert" className="error">{checkError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>Reintentar comprobación</button></> : <>
+  if (invalid) {
+    content = <p role="alert" className="error">Enlace expirado o no válido. Solicita uno nuevo.</p>;
+  } else if (check === 'checking') {
+    content = <output>Comprobando que el enlace sigue siendo válido…</output>;
+  } else if (check === 'error') {
+    content = <>
+      <p role="alert" className="error">{checkError}</p>
+      <button type="button" onClick={() => setAttempt(value => value + 1)}>Reintentar comprobación</button>
+    </>;
+  } else {
+    content = <>
       <p>Elige una contraseña nueva para recuperar el acceso a tu cuenta.</p>
       <form onSubmit={submit} aria-busy={pending}>
         <PasswordInput id="reset-password" label="Nueva contraseña" value={password}
@@ -146,7 +154,11 @@ export function ResetPasswordForm({ token, onReset }) {
         <button type="submit" disabled={pending}>{pending ? 'Guardando…' : 'Guardar nueva contraseña'}</button>
       </form>
       <div ref={feedback} tabIndex={-1} role="alert" className="error">{error}</div>
-    </>}
+    </>;
+  }
+
+  return <RecoveryLayout title={title}>
+    {content}
     <p><a href="#recuperar-contrasena">Solicitar un nuevo enlace</a></p>
   </RecoveryLayout>;
 }

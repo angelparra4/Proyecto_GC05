@@ -2,7 +2,17 @@ import { TEXT_FIELDS, validateRequiredText } from './registration.js';
 
 // SCRUM-93 §5: 9 cifras con prefijo +34 opcional. Solo números españoles.
 export const TELEFONO_PATTERN = /^(?:\+34)?[0-9]{9}$/;
-const EDITABLE = ['nombre', 'apellidos', 'telefono'];
+const EDITABLE = new Set(['nombre', 'apellidos', 'telefono']);
+
+function validateTelefono(telefono, changes, errors) {
+  if (telefono === null) {
+    changes.telefono = null;
+  } else if (typeof telefono !== 'string' || !TELEFONO_PATTERN.test(telefono.trim())) {
+    errors.telefono = 'Introduce 9 cifras, con el prefijo +34 opcional.';
+  } else {
+    changes.telefono = telefono.trim();
+  }
+}
 
 /**
  * Valida un PATCH parcial del perfil. Solo se aceptan nombre, apellidos y telefono;
@@ -16,7 +26,7 @@ export function validateProfileUpdate(body) {
     return { changes, errors: { perfil: 'Envía los datos del perfil como un objeto JSON.' } };
   }
   for (const key of Object.keys(body)) {
-    if (!EDITABLE.includes(key)) errors[key] = 'Este campo no se puede modificar desde el perfil.';
+    if (!EDITABLE.has(key)) errors[key] = 'Este campo no se puede modificar desde el perfil.';
   }
   for (const key of ['nombre', 'apellidos']) {
     if (!(key in body)) continue;
@@ -25,11 +35,7 @@ export function validateProfileUpdate(body) {
     else changes[key] = text;
   }
   if ('telefono' in body) {
-    const { telefono } = body;
-    if (telefono === null) changes.telefono = null;
-    else if (typeof telefono !== 'string' || !TELEFONO_PATTERN.test(telefono.trim())) {
-      errors.telefono = 'Introduce 9 cifras, con el prefijo +34 opcional.';
-    } else changes.telefono = telefono.trim();
+    validateTelefono(body.telefono, changes, errors);
   }
   if (!Object.keys(errors).length && !Object.keys(changes).length) {
     errors.perfil = 'Indica al menos un campo para actualizar.';
