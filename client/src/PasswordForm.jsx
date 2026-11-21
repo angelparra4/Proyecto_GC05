@@ -9,7 +9,7 @@ function validate({ actual, nueva, confirmacion }) {
   const errors = {};
   if (!actual) errors.actual = 'Introduce tu contraseña actual.';
   if (!nueva) errors.nueva = 'Introduce la nueva contraseña.';
-  else if ([...nueva].length < 8 || !/\p{L}/u.test(nueva) || !/[0-9]/.test(nueva)) errors.nueva = STRENGTH;
+  else if ([...nueva].length < 8 || !/\p{L}/u.test(nueva) || !/\d/.test(nueva)) errors.nueva = STRENGTH;
   else if ([...nueva].length > 128) errors.nueva = 'La contraseña no puede superar los 128 caracteres.';
   else if (nueva === actual) errors.nueva = 'La nueva contraseña debe ser distinta de la actual.';
   if (!confirmacion) errors.confirmacion = 'Repite la nueva contraseña.';

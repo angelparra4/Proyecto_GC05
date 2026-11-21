@@ -30,7 +30,7 @@ export function ForgotPasswordForm() {
       await requestRecovery(email);
       setSuccess(true);
       setEmail('');
-    } catch (failure) { setError(failure.message); }
+    } catch (error) { setError(error.message); }
     finally {
       busy.current = false;
       setPending(false);
@@ -90,10 +90,10 @@ export function ResetPasswordForm({ token, onReset }) {
     if (validToken) {
       validateRecoveryToken(token).then(() => {
         if (active) setCheck('valid');
-      }).catch(failure => {
+      }).catch(error => {
         if (!active) return;
-        setCheckError(failure.message);
-        setCheck(failure.invalidToken ? 'invalid' : 'error');
+        setCheckError(error.message);
+        setCheck(error.invalidToken ? 'invalid' : 'error');
       });
     }
     return () => { active = false; };
@@ -103,7 +103,7 @@ export function ResetPasswordForm({ token, onReset }) {
     event.preventDefault();
     if (busy.current || !validToken || check !== 'valid') return;
     let validation = '';
-    if ([...password].length < 8 || [...password].length > 128 || !/\p{L}/u.test(password) || !/[0-9]/.test(password)) {
+    if ([...password].length < 8 || [...password].length > 128 || !/\p{L}/u.test(password) || !/\d/.test(password)) {
       validation = 'Usa entre 8 y 128 caracteres, con al menos una letra y un número.';
     } else if (password !== confirmPassword) validation = 'Las contraseñas no coinciden.';
     if (validation) { setError(validation); feedback.current?.focus(); return; }
@@ -113,7 +113,7 @@ export function ResetPasswordForm({ token, onReset }) {
     try {
       await resetPassword({ token, password, confirmPassword });
       onReset();
-    } catch (failure) { setError(failure.message); }
+    } catch (error) { setError(error.message); }
     finally {
       setPassword('');
       setConfirmPassword('');

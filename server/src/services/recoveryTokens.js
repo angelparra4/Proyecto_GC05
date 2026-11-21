@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
-import validator from 'validator';
+import isEmail from 'validator/lib/isEmail.js';
 
 export const RECOVERY_TTL_MS = 30 * 60 * 1000;
 export const RECOVERY_WINDOW_MS = 60 * 60 * 1000;
@@ -21,7 +21,7 @@ export function createRecoveryTokens(repository) {
 
     async issue(rawEmail) {
       const email = typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : '';
-      if (email.length > 254 || !validator.isEmail(email, { allow_utf8_local_part: false })) {
+      if (email.length > 254 || !isEmail(email, { allow_utf8_local_part: false })) {
         throw new TypeError('El formato del correo no es válido.');
       }
       const token = randomBytes(32).toString('hex');
