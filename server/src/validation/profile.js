@@ -1,7 +1,7 @@
 import { TEXT_FIELDS, validateRequiredText } from './registration.js';
 
 // SCRUM-93 §5: 9 cifras con prefijo +34 opcional. Solo números españoles.
-export const TELEFONO_PATTERN = /^(?:\+34)?[0-9]{9}$/;
+export const TELEFONO_PATTERN = /^(?:\+34)?\d{9}$/;
 const EDITABLE = new Set(['nombre', 'apellidos', 'telefono']);
 
 function validateTelefono(telefono, changes, errors) {
